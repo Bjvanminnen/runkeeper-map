@@ -1,18 +1,33 @@
+/* global google*/
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+const styles = {
+  map: {
+    height: 400,
+    width: 400
+  }
+};
 
 class App extends Component {
+  componentDidMount() {
+    var uluru = {lat: -25.363, lng: 131.044};
+    var map = new google.maps.Map(this.mapNode, {
+      zoom: 4,
+      center: uluru
+    });
+    var marker = new google.maps.Marker({
+      position: uluru,
+      map: map
+    });
+  }
+
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <div
+          ref={mapNode => this.mapNode = mapNode}
+          style={styles.map}
+        />
       </div>
     );
   }
