@@ -9,19 +9,13 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/activitiesByDateRange', (req, res) => {
-  console.log(req.query.userName);
-  request.get('https://runkeeper.com/activitiesByDateRange' +
-    `?userName=${req.query.userName}` +
-    `&startDate=${req.query.startDate}`
-  ).pipe(res);
-});
+app.get('/activitiesByDateRange', runkeeper);
+app.get('/user/:userId/activity/:activityId', runkeeper);
+app.get('/ajax/pointData', runkeeper);
 
-app.get('/ajax/pointData', (req, res) => {
-  request.get('https://runkeeper.com/ajax/pointData' +
-    `?tripUuid=${req.query.tripUuid}`
-  ).pipe(res);
-});
+function runkeeper(req, res) {
+  request.get(`https://runkeeper.com${req.url}`).pipe(res);
+}
 
 app.listen(8080, function () {
   console.log('Example app listening on port 8080!')

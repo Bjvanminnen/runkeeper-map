@@ -15,6 +15,10 @@ class App extends Component {
       .then(response => response.json())
       .then(json => console.log(json));
 
+    fetch('http://localhost:8080/user/2104721070/activity/1048000416')
+      .then(response => response.text())
+      .then(text => console.log(text));
+
     fetch('http://localhost:8080/ajax/pointData?tripUuid=ef5af214-f7f2-468c-80cb-9b09ef406029')
       .then(response => response.json())
       .then(json => console.log(json));
