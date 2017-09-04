@@ -1,7 +1,6 @@
 /* global google*/
 import React, { Component } from 'react';
 import pointData from './pointData';
-import $ from 'jquery';
 
 const styles = {
   map: {
@@ -12,14 +11,13 @@ const styles = {
 
 class App extends Component {
   componentDidMount() {
-    $.ajax({
-      method: 'GET',
-      url: 'http://localhost:8080/ajax/pointData?tripUuid=ef5af214-f7f2-468c-80cb-9b09ef406029'
-    }).done(data => {
-      console.log('success', data);
-    }).fail(() => {
-      console.log('fail');
-    });
+    fetch('http://localhost:8080/activitiesByDateRange?userName=2104721070&startDate=Aug-01-2017')
+      .then(response => response.json())
+      .then(json => console.log(json));
+
+    fetch('http://localhost:8080/ajax/pointData?tripUuid=ef5af214-f7f2-468c-80cb-9b09ef406029')
+      .then(response => response.json())
+      .then(json => console.log(json));
 
 
     // $.ajax({

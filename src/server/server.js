@@ -9,9 +9,18 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.get('/activitiesByDateRange', (req, res) => {
+  console.log(req.query.userName);
+  request.get('https://runkeeper.com/activitiesByDateRange' +
+    `?userName=${req.query.userName}` +
+    `&startDate=${req.query.startDate}`
+  ).pipe(res);
+});
+
 app.get('/ajax/pointData', (req, res) => {
-  console.log(req.query.tripUuid);
-  request.get(`https://runkeeper.com/ajax/pointData?tripUuid=${req.query.tripUuid}`).pipe(res);
+  request.get('https://runkeeper.com/ajax/pointData' +
+    `?tripUuid=${req.query.tripUuid}`
+  ).pipe(res);
 });
 
 app.listen(8080, function () {
