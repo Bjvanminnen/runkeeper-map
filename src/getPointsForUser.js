@@ -7,13 +7,16 @@ function getActivites(userName, startDate) {
   return fetch(`${SERVER_URL}/activitiesByDateRange?userName=${userName}&startDate=${startDate}`)
   .then(response => response.json())
   .then(json => {
-    let activityIds = [];
+    let activities = [];
     Object.values(json.activities).forEach(yearData => {
       Object.values(yearData).forEach(monthData => {
-        activityIds = activityIds.concat(monthData.map(activity => activity.activity_id));
+        activities = activities.concat(monthData.map(activity => ({
+          id: activity.activity_id,
+          dateString: `${activity.month} ${activity.dayOfMonth}, ${activity.year}`
+        })));
       });
     });
-    return activityIds;
+    return activities;
   });
 }
 
@@ -35,54 +38,72 @@ function getTripUuid(userName, activityId) {
 function getPoints(tripUuid) {
   return fetch(`${SERVER_URL}/ajax/pointData?tripUuid=${tripUuid}`)
   .then(response => response.json())
-  .then(json => ({
-    points: json.points.map(p => ({
-      lat: p.latitude,
-      lng: p.longitude,
-    }))
-  }));
+  .then(json => json.points.map(p => ({
+    lat: p.latitude,
+    lng: p.longitude,
+  })));
 }
 
 export default function getPointsForUser(userName) {
-  const cached = localStorage.getItem('paths');
-  if (cached) {
-    return Promise.resolve(JSON.parse(cached));
-  }
+  // const cached = localStorage.getItem('paths');
+  // if (cached) {
+  //   return Promise.resolve(JSON.parse(cached));
+  // }
 
   const months = [
-    // 'Jan-01-2017',
-    // 'Feb-01-2017',
-    // 'Mar-01-2017',
-    // 'Apr-01-2017',
-    // 'May-01-2017',
-    // 'Jun-01-2017',
-    // 'Jul-01-2017',
+    'Jan-01-2017',
+    'Feb-01-2017',
+    'Mar-01-2017',
+    'Apr-01-2017',
+    'May-01-2017',
+    'Jun-01-2017',
+    'Jul-01-2017',
     'Aug-01-2017',
     'Sep-01-2017',
 
-    // 'Jan-01-2016',
-    // 'Feb-01-2016',
-    // 'Mar-01-2016',
-    // 'Apr-01-2016',
-    // 'May-01-2016',
-    // 'Jun-01-2016',
-    // 'Jul-01-2016',
-    // 'Aug-01-2016',
-    // 'Sep-01-2016',
-    // 'Oct-01-2016',
-    // 'Nov-01-2016',
-    // 'Dec-01-2016',
+    'Jan-01-2016',
+    'Feb-01-2016',
+    'Mar-01-2016',
+    'Apr-01-2016',
+    'May-01-2016',
+    'Jun-01-2016',
+    'Jul-01-2016',
+    'Aug-01-2016',
+    'Sep-01-2016',
+    'Oct-01-2016',
+    'Nov-01-2016',
+    'Dec-01-2016',
   ];
   return Promise.all(months.map(month =>
-    getActivites(userName, 'Aug-01-2017')
-    .then(activityIds =>
+    getActivites(userName, month)
+    .then(activites =>
       Promise.all(
-        activityIds.map(id => getTripUuid(userName, id))
+        activites.map(activity =>
+          getTripUuid(userName, activity.id)
+          .then(tripUuid => ({
+            ...activity,
+            tripUuid
+          }))
+        )
       )
     )
-    .then(tripUuids =>
+    .then(activities =>
       Promise.all(
-        tripUuids.map(tripUuid => getPoints(tripUuid))
+        activities.map(activity =>
+          getPoints(activity.tripUuid)
+          .then(points => ({
+            ...activity,
+            points
+          }))
+          .catch(err => {
+            console.log('Error for activity, ', activity);
+            console.log(err);
+            return ({
+              ...activity,
+              points: []
+            });
+          })
+        )
       )
     )
   )).then(pathsPerMonth => _.flatten(pathsPerMonth));

@@ -4,48 +4,61 @@ import PropTypes from 'prop-types';
 
 const styles = {
   map: {
-    height: window.outerHeight,
+    height: window.innerHeight,
     width: '100%'
   },
-  input: {
+  info: {
     position: 'absolute',
     top: 10,
     left: 120,
+  },
+  text: {
+    background: 'white',
+  },
+  input: {
     width: 100
   }
 };
 
 export default class MapPath extends Component {
   static propTypes = {
-    paths: PropTypes.arrayOf(
+    activities: PropTypes.arrayOf(
       PropTypes.shape({
         points: PropTypes.arrayOf(PropTypes.shape({
           lat: PropTypes.number.isRequired,
           lng: PropTypes.number.isRequired,
         }))
       })
-    )
+    ).isRequired
+  };
+
+  state = {
+    info: ''
   };
 
   onChangeInput = event => {
-    const val = parseInt(event.target.value);
-    if (!val && isNaN(val)) {
+    const { activities } = this.props;
+
+    const index = parseInt(event.target.value, 10);
+    if (!index || isNaN(index) || !activities[index]) {
       return;
     }
-    console.log('showing path ', val);
-    this.showPath(val);
+    this.showPath(index);
+    this.setState({
+      info: activities[index].dateString
+    });
   }
 
 
   componentDidMount() {
-    const { paths } = this.props;
+    const { activities } = this.props;
 
     this.mapObj = new google.maps.Map(this.mapNode, {
       zoom: 14,
-      center: paths[0].points[0]
+      center: activities[0].points[0]
     });
 
-    this.pathObjs = paths.map(path =>
+    this.pathObjs = activities.map(path =>
       new google.maps.Polyline({
         path: path.points,
         geodesic: true,
@@ -78,11 +91,14 @@ export default class MapPath extends Component {
           ref={mapNode => this.mapNode = mapNode}
           style={styles.map}
         />
-        <input
-          type="text"
-          style={styles.input}
-          onChange={this.onChangeInput}
-        />
+        <div style={styles.info}>
+          <input
+            type="text"
+            style={styles.input}
+            onChange={this.onChangeInput}
+          />
+          <div>{this.state.info}</div>
+        </div>
       </div>
     );
   }

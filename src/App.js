@@ -5,23 +5,23 @@ import getPointsForUser from './getPointsForUser';
 
 class App extends Component {
   state = {
-    paths: null
+    activities: null
   };
   componentDidMount() {
     getPointsForUser(2104721070)
-    .then(points => {
-      this.setState({paths: points});
+    .then(activities => {
+      this.setState({activities});
     });
   }
 
   render() {
-    if (this.state.paths === null) {
+    if (this.state.activities === null) {
       return <div>Loading...</div>
     }
 
     return (
       <div>
-        <MapPath paths={this.state.paths}/>
+        <MapPath activities={this.state.activities}/>
       </div>
     );
   }
