@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 
 const styles = {
   map: {
-    height: 600,
-    width: 600
+    height: window.outerHeight,
+    width: '100%'
   }
 };
 
