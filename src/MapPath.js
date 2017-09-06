@@ -20,6 +20,88 @@ const styles = {
   }
 };
 
+const nightMode = [
+  {elementType: 'labels.text', stylers: [{visibility: 'off'}]},
+  {
+    featureType: 'road',
+    elementType: 'labels.text',
+    stylers: [{visibility: 'on'}]
+  },
+  {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+  // {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+
+  {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+  {
+    featureType: 'administrative.locality',
+    elementType: 'labels.text.fill',
+    stylers: [{color: '#d59563'}]
+  },
+  {
+    featureType: 'poi',
+    stylers: [{visibility: 'off'}]
+  },
+  {
+    featureType: 'all',
+    elementType: 'labels.icon',
+    stylers: [{visibility: 'off'}]
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry',
+    stylers: [{color: '#38414e'}]
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry.stroke',
+    stylers: [{color: '#212a37'}]
+  },
+  {
+    featureType: 'road',
+    elementType: 'labels.text.fill',
+    stylers: [{color: '#9ca5b3'}]
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'geometry',
+    stylers: [{color: '#746855'}]
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'geometry.stroke',
+    stylers: [{color: '#1f2835'}]
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'labels.text.fill',
+    stylers: [{color: '#f3d19c'}]
+  },
+  {
+    featureType: 'transit',
+    elementType: 'geometry',
+    stylers: [{color: '#2f3948'}]
+  },
+  {
+    featureType: 'transit.station',
+    elementType: 'labels.text.fill',
+    stylers: [{color: '#d59563'}]
+  },
+  {
+    featureType: 'water',
+    elementType: 'geometry',
+    stylers: [{color: '#17263c'}]
+  },
+  {
+    featureType: 'water',
+    elementType: 'labels.text.fill',
+    stylers: [{color: '#515c6d'}]
+  },
+  {
+    featureType: 'water',
+    elementType: 'labels.text.stroke',
+    stylers: [{color: '#17263c'}]
+  }
+];
+
 export default class MapPath extends Component {
   static propTypes = {
     activities: PropTypes.arrayOf(
@@ -55,15 +137,16 @@ export default class MapPath extends Component {
 
     this.mapObj = new google.maps.Map(this.mapNode, {
       zoom: 14,
-      center: activities[0].points[0]
+      center: activities[0].points[0],
+      styles: nightMode
     });
 
     this.pathObjs = activities.map(path =>
       new google.maps.Polyline({
         path: path.points,
         geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
+        strokeColor: '#00ff00',
+        strokeOpacity: 0.5,
         strokeWeight: 2
       })
     );

@@ -45,10 +45,10 @@ function getPoints(tripUuid) {
 }
 
 export default function getPointsForUser(userName) {
-  // const cached = localStorage.getItem('paths');
-  // if (cached) {
-  //   return Promise.resolve(JSON.parse(cached));
-  // }
+  const cached = localStorage.getItem('paths');
+  if (cached) {
+    return Promise.resolve(JSON.parse(cached));
+  }
 
   const months = [
     'Jan-01-2017',
