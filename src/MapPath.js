@@ -20,22 +20,16 @@ const styles = {
   }
 };
 
-const nightMode = [
-  {elementType: 'labels.text', stylers: [{visibility: 'off'}]},
-  {
-    featureType: 'road',
-    elementType: 'labels.text',
-    stylers: [{visibility: 'on'}]
-  },
-  {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
-  // {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+const colors = {
+  darkblue: '#242f3e',
+  darkerblue: '#17263c',
+  softblue: '#38414e',
+  bluegray: '#9ca5b3',
+  brown: '#746855',
+  lightbrown: '#f3d19c',
+};
 
-  {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
-  {
-    featureType: 'administrative.locality',
-    elementType: 'labels.text.fill',
-    stylers: [{color: '#d59563'}]
-  },
+const nightMode = [
   {
     featureType: 'poi',
     stylers: [{visibility: 'off'}]
@@ -46,60 +40,52 @@ const nightMode = [
     stylers: [{visibility: 'off'}]
   },
   {
-    featureType: 'road',
-    elementType: 'geometry',
-    stylers: [{color: '#38414e'}]
+    elementType: 'labels.text',
+    stylers: [{visibility: 'off'}]
   },
   {
     featureType: 'road',
-    elementType: 'geometry.stroke',
-    stylers: [{color: '#212a37'}]
+    elementType: 'labels.text',
+    stylers: [{visibility: 'on'}]
   },
   {
-    featureType: 'road',
-    elementType: 'labels.text.fill',
-    stylers: [{color: '#9ca5b3'}]
-  },
-  {
-    featureType: 'road.highway',
-    elementType: 'geometry',
-    stylers: [{color: '#746855'}]
-  },
-  {
-    featureType: 'road.highway',
-    elementType: 'geometry.stroke',
-    stylers: [{color: '#1f2835'}]
-  },
-  {
-    featureType: 'road.highway',
-    elementType: 'labels.text.fill',
-    stylers: [{color: '#f3d19c'}]
-  },
-  {
-    featureType: 'transit',
-    elementType: 'geometry',
-    stylers: [{color: '#2f3948'}]
-  },
-  {
-    featureType: 'transit.station',
-    elementType: 'labels.text.fill',
-    stylers: [{color: '#d59563'}]
-  },
-  {
-    featureType: 'water',
-    elementType: 'geometry',
-    stylers: [{color: '#17263c'}]
-  },
-  {
-    featureType: 'water',
-    elementType: 'labels.text.fill',
-    stylers: [{color: '#515c6d'}]
-  },
-  {
-    featureType: 'water',
     elementType: 'labels.text.stroke',
-    stylers: [{color: '#17263c'}]
-  }
+    stylers: [{color: colors.darkblue}]
+  },
+  {
+    elementType: 'geometry',
+    stylers: [{color: colors.darkblue}]
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry',
+    stylers: [{color: colors.softblue}]
+  },
+  {
+    featureType: 'road',
+    elementType: 'labels.text.fill',
+    stylers: [{color: colors.bluegray}]
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'geometry',
+    stylers: [{color: colors.brown}]
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'geometry.stroke',
+    stylers: [{color: colors.darkblue}]
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'labels.text.fill',
+    stylers: [{color: colors.lightbrown}]
+  },
+  {
+    featureType: 'water',
+    elementType: 'geometry',
+    stylers: [{color: colors.darkerblue}]
+  },
 ];
 
 export default class MapPath extends Component {
