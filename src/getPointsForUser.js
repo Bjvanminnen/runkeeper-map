@@ -2,7 +2,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 import { getCached, setCached } from './pointsCache';
 
-const SERVER_URL = 'http://localhost:8080';
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
 
 function getActivites(userName, startDate) {
   return fetch(`${SERVER_URL}/activitiesByDateRange?userName=${userName}&startDate=${startDate}`)
@@ -80,11 +80,7 @@ function getPointsForUserMonth(userName, month) {
 }
 
 export default function getPointsForUser(userName) {
-  // TODO - build better caching layer
-  // const cached = localStorage.getItem('paths');
-  // if (cached) {
-  //   return Promise.resolve(JSON.parse(cached));
-  // }
+  // TODO - make this more dynamic
 
   const months = [
     'Jan-01-2017',
@@ -96,6 +92,7 @@ export default function getPointsForUser(userName) {
     'Jul-01-2017',
     'Aug-01-2017',
     'Sep-01-2017',
+    'Oct-01-2017',
 
     'Jan-01-2016',
     'Feb-01-2016',
@@ -123,9 +120,6 @@ export default function getPointsForUser(userName) {
     'Nov-01-2015',
     'Dec-01-2015',
   ];
-  // const cache = months.map(getCached);
-
-
 
   return Promise.all(months.map(month => {
     const cached = getCached(month);
