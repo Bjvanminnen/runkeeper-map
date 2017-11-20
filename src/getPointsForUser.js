@@ -2,7 +2,8 @@ import $ from 'jquery';
 import _ from 'lodash';
 import { getCached, setCached } from './pointsCache';
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+const SERVER_URL = process.env.NODE_ENV === 'production' && window.location.origin ||
+  process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
 
 function getActivites(userName, startDate) {
   return fetch(`${SERVER_URL}/activitiesByDateRange?userName=${userName}&startDate=${startDate}`)
