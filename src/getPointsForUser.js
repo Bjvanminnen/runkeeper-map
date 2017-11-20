@@ -93,6 +93,7 @@ export default function getPointsForUser(userName) {
     'Aug-01-2017',
     'Sep-01-2017',
     'Oct-01-2017',
+    'Nov-01-2017',
 
     'Jan-01-2016',
     'Feb-01-2016',
