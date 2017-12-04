@@ -2,7 +2,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 import { getCached, setCached } from './pointsCache';
 
-const SERVER_URL = process.env.NODE_ENV === 'production' && window.location.origin ||
+const SERVER_URL = (process.env.NODE_ENV === 'production' && window.location.origin) ||
   process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
 
 function getActivites(userName, startDate) {
@@ -40,10 +40,26 @@ function getTripUuid(userName, activityId) {
 function getPoints(tripUuid) {
   return fetch(`${SERVER_URL}/ajax/pointData?tripUuid=${tripUuid}`)
   .then(response => response.json())
-  .then(json => json.points.map(p => ({
-    lat: p.latitude,
-    lng: p.longitude,
-  })));
+  .then(json => {
+    if (json.points.length) {
+      return json.points.map(p => ({
+        lat: p.latitude,
+        lng: p.longitude,
+      }));
+    } else if (json.routePoints) {
+      console.log('points from routePoints', tripUuid, json);
+      const routePoints = JSON.parse(json.routePoints);
+      return routePoints.map(p => ({
+        lat: p.latitude,
+        lng: p.longitude,
+      }));
+    } else {
+      console.log('No points', tripUuid, json);
+      // TODO: This can happen if we use a private route. In this case, you
+      // need to be authenticated to get the route points.
+      return [];
+    }
+  });
 }
 
 function getPointsForUserMonth(userName, month) {
@@ -81,49 +97,28 @@ function getPointsForUserMonth(userName, month) {
 }
 
 export default function getPointsForUser(userName) {
-  // TODO - make this more dynamic
+  // Day Month Date Year ...
+  const MONTH = 1;
+  const YEAR = 3;
 
-  const months = [
-    'Jan-01-2017',
-    'Feb-01-2017',
-    'Mar-01-2017',
-    'Apr-01-2017',
-    'May-01-2017',
-    'Jun-01-2017',
-    'Jul-01-2017',
-    'Aug-01-2017',
-    'Sep-01-2017',
-    'Oct-01-2017',
-    'Nov-01-2017',
+  const today = (new Date()).toString().split(' ');
 
-    'Jan-01-2016',
-    'Feb-01-2016',
-    'Mar-01-2016',
-    'Apr-01-2016',
-    'May-01-2016',
-    'Jun-01-2016',
-    'Jul-01-2016',
-    'Aug-01-2016',
-    'Sep-01-2016',
-    'Oct-01-2016',
-    'Nov-01-2016',
-    'Dec-01-2016',
+  const startYear = 2015;
+  const endYear = parseInt(today[YEAR], 10);
 
-    'Jan-01-2015',
-    'Feb-01-2015',
-    'Mar-01-2015',
-    'Apr-01-2015',
-    'May-01-2015',
-    'Jun-01-2015',
-    'Jul-01-2015',
-    'Aug-01-2015',
-    'Sep-01-2015',
-    'Oct-01-2015',
-    'Nov-01-2015',
-    'Dec-01-2015',
-  ];
+  let monthStrings = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthIndex = monthStrings.indexOf(today[MONTH]);
 
-  return Promise.all(months.map(month => {
+  let dates = [];
+  for (let year = startYear; year <= endYear; year++) {
+    monthStrings.forEach((month, index) => {
+      if (year < endYear || index <= monthIndex) {
+        dates.push(`${month}-01-${year}`);
+      }
+    });
+  }
+
+  return Promise.all(dates.map(month => {
     const cached = getCached(month);
     if (cached) {
       return Promise.resolve(cached);

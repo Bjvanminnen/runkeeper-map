@@ -123,7 +123,7 @@ export default class MapPath extends Component {
 
     this.mapObj = new google.maps.Map(this.mapNode, {
       zoom: 14,
-      center: activities[0].points[0],
+      center: activities.filter(path => path.points.length)[0].points[0],
       styles: nightMode
     });
 
