@@ -1,6 +1,7 @@
 /* global google*/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 const styles = {
   map: {
@@ -11,6 +12,11 @@ const styles = {
     position: 'absolute',
     top: 10,
     left: 120,
+  },
+  select: {
+    position: 'absolute',
+    top: 50,
+    left: 10,
   },
   text: {
     background: 'white',
@@ -88,6 +94,11 @@ const nightMode = [
   },
 ];
 
+function yearFromActivity(activity) {
+  // Cached copies of data wont have year (could just generate it on load)
+  return activity.year || activity.dateString.split(' ')[2];
+}
+
 export default class MapPath extends Component {
   static propTypes = {
     activities: PropTypes.arrayOf(
@@ -101,7 +112,8 @@ export default class MapPath extends Component {
   };
 
   state = {
-    info: ''
+    info: '',
+    yearFilter: '',
   };
 
   onChangeInput = event => {
@@ -117,6 +129,26 @@ export default class MapPath extends Component {
     });
   }
 
+  onChangeYear = event => {
+    const yearFilter = event.target.value;
+
+    if (this.props.activities.length !== this.pathObjs.length) {
+      throw new Error('expected 1:1 mapping between activities/paths');
+    }
+
+    // More correct would be to do this in a componentDidUpdate
+    this.props.activities.forEach((activity, index) => {
+      let mapObj = null;
+      if (!yearFilter || yearFilter === yearFromActivity(activity)) {
+        mapObj = this.mapObj;
+      }
+      this.pathObjs[index].setMap(mapObj);
+    });
+
+    this.setState({
+      yearFilter: event.target.value
+    });
+  }
 
   componentDidMount() {
     const { activities } = this.props;
@@ -154,6 +186,9 @@ export default class MapPath extends Component {
   }
 
   render() {
+    const years = [''].concat(
+      _.uniq(this.props.activities.map(yearFromActivity))
+    );
     return (
       <div>
         <div
@@ -167,6 +202,13 @@ export default class MapPath extends Component {
             onChange={this.onChangeInput}
           />
           <div>{this.state.info}</div>
+        </div>
+        <div style={styles.select}>
+          <select value={this.state.yearFilter} onChange={this.onChangeYear}>
+            {years.map(year =>
+              <option key={year} value={year}>{year}</option>
+            )}
+          </select>
         </div>
       </div>
     );

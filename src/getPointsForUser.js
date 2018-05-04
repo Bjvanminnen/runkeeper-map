@@ -14,7 +14,8 @@ function getActivites(userName, startDate) {
       Object.values(yearData).forEach(monthData => {
         activities = activities.concat(monthData.map(activity => ({
           id: activity.activity_id,
-          dateString: `${activity.month} ${activity.dayOfMonth}, ${activity.year}`
+          dateString: `${activity.month} ${activity.dayOfMonth}, ${activity.year}`,
+          year: activity.year,
         })));
       });
     });
