@@ -6,7 +6,7 @@ const SERVER_URL = (process.env.NODE_ENV === 'production' && window.location.ori
   process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
 
 function getActivites(userName, startDate) {
-  return fetch(`${SERVER_URL}/activitiesByDateRange?userName=${userName}&startDate=${startDate}`)
+  return fetch(`${SERVER_URL}/api/activitiesByDateRange?userName=${userName}&startDate=${startDate}`)
   .then(response => response.json())
   .then(json => {
     let activities = [];
@@ -25,6 +25,7 @@ function getActivites(userName, startDate) {
 
 /**
  * Parses HTML given to us by hitting the activity page to extract the tripUuid
+ * TODO: this page is no longer accessible without logging in, so this is broken
  */
 function extractTripUuid(html) {
   const re = /runkeeper:\/\/\?view=activity&tripuuid=(.*)&deepLinkSource=twitterCard/;
@@ -33,13 +34,13 @@ function extractTripUuid(html) {
 }
 
 function getTripUuid(userName, activityId) {
-  return fetch(`${SERVER_URL}/user/${userName}/activity/${activityId}`)
+  return fetch(`${SERVER_URL}/api/user/${userName}/activity/${activityId}`)
   .then(response => response.text())
   .then(extractTripUuid)
 }
 
 function getPoints(tripUuid) {
-  return fetch(`${SERVER_URL}/ajax/pointData?tripUuid=${tripUuid}`)
+  return fetch(`${SERVER_URL}/api/ajax/pointData?tripUuid=${tripUuid}`)
   .then(response => response.json())
   .then(json => {
     if (json.points.length) {
