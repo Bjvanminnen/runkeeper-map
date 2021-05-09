@@ -8,7 +8,7 @@
   "dependencies": {
     "cors-anywhere": "^0.4.0",
     "jquery": "^3.2.1",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
   },
